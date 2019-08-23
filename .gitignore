@@ -210,3 +210,9 @@ fabric.properties
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
+dataset/nasa-http/NASA_access_log_Aug95
+dataset/calgary-http/calgary_access_log
+dataset/fifa-worldcup-1998/wc_day14_1
+dataset/nasa-http/NASA_access_log_Jul95
+dataset/saskatchewan-http/usask_abort_log
+dataset/saskatchewan-http/usask_access_log
