@@ -32,5 +32,5 @@ def preprocess(source_csv_path: str, output_csv_path: str, time_step: int = 60):
 
 if __name__ == '__main__':
     # in seconds
-    preprocess('NASA_access_log_Aug95.csv', 'nasa_temporal_request_number_dataset_August95.csv', 30)
-    preprocess('NASA_access_log_Jul95.csv', 'nasa_temporal_request_number_dataset_July95.csv', 30)
+    preprocess('NASA_access_log_Aug95.csv', 'nasa_temporal_request_number_dataset_August95_30s.csv', 30)
+    preprocess('NASA_access_log_Jul95.csv', 'nasa_temporal_request_number_dataset_July95_30s.csv', 30)
