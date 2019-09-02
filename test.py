@@ -1,7 +1,11 @@
 from model import TCN
+import pandas as pd
 
-hidden_units_per_layer = 10
-levels = 5
+
+
+
+hidden_units_per_layer = 1
+levels = 8
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
 kernel_size = 8
