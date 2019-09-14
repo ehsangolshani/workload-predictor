@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-
+import numpy as np
 from model import TCN
 from torch.utils import data
 from customdataset import CustomWorkloadDataset
@@ -29,10 +29,12 @@ hidden_units_per_layer = 1  # channel
 levels = 8
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
-kernel_size = 3
+output_size = 1
+kernel_size = 5
 dropout = 0.0
 
-model: TCN = TCN(input_size=input_channels, num_channels=channel_sizes, kernel_size=kernel_size, dropout=dropout)
+model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
+                 kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0)
 model.train(mode=True)
@@ -40,9 +42,14 @@ model.train(mode=True)
 for epoch in range(epoch_number):
     running_loss = 0.0
     for i, data in enumerate(dataloader_july, 0):
-        # data = data[0]
-        previous_sequence, current_value = data[:-1], data[-1]
-        print(data.size())
+        # a = data.size()
+        # data.squeeze()
+        # b = data.size()
+        previous_sequence: torch.Tensor = data[:, :, :-1]
+        current_value: torch.Tensor = data[:, :, -1]
+        # current_value = current_value.view(-1)
+        # current_value.long()
+        # current_value=current_value.squeeze(dim=)
         print(previous_sequence.size())
         print(current_value.size())
 
