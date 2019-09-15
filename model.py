@@ -12,5 +12,4 @@ class TCN(nn.Module):
     def forward(self, x):
         y1: torch.Tensor = self.tcn(x)
         y1 = y1.squeeze()
-        a = y1.size()
         return self.linear(y1)
