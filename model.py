@@ -8,6 +8,7 @@ class TCN(nn.Module):
         super(TCN, self).__init__()
         self.tcn: TemporalConvNet = TemporalConvNet(input_size, num_channels, kernel_size=kernel_size, dropout=dropout)
         self.linear = nn.Linear(sequence_length, output_size)
+        # self.final_relu = nn.ReLU()
 
     def forward(self, x):
         y1: torch.Tensor = self.tcn(x)

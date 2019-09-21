@@ -8,7 +8,8 @@ class Chomp1d(nn.Module):
         self.chomp_size = chomp_size
 
     def forward(self, x):
-        return x[:, :, :-self.chomp_size].contiguous()
+        o = x[:, :, :-self.chomp_size].contiguous()
+        return o
 
 
 class TemporalBlock(nn.Module):
@@ -41,7 +42,8 @@ class TemporalBlock(nn.Module):
     def forward(self, x):
         out = self.net(x)
         res = x if self.downsample is None else self.downsample(x)
-        return self.relu(out + res)
+        o = self.relu(out + res)
+        return o
 
 
 class TemporalConvNet(nn.Module):

@@ -13,7 +13,8 @@ class CustomWorkloadDataset(Dataset):
         self.window_size: int = window_size
 
     def __getitem__(self, index: int):
-        return self.data_tensor[:, index:index + self.window_size]
+        o = self.data_tensor[:, index:index + self.window_size]
+        return o
 
     def __len__(self):
         return self.data_tensor.size()[1] - self.window_size + 1
