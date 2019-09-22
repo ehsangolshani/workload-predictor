@@ -225,3 +225,5 @@ dataset/fifa-worldcup-1998/wc_day14_1
 dataset/saskatchewan-http/usask_abort_log
 dataset/saskatchewan-http/usask_access_log
 .idea
+model_nasa_dataset_*
+final_model_nasa_dataset.pt
