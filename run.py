@@ -34,9 +34,10 @@ dropout = 0.0
 
 model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
                  kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
-criterion = nn.L1Loss()
-# optimizer = optim.Adam(params=model.parameters())
-optimizer = optim.SGD(params=model.parameters(), lr=0.0001, momentum=0.0)
+
+criterion = nn.MSELoss()
+optimizer = optim.Adam(params=model.parameters())
+# optimizer = optim.SGD(params=model.parameters(), lr=0.000001, momentum=0.0)
 model.train(mode=True)
 
 with autograd.detect_anomaly():

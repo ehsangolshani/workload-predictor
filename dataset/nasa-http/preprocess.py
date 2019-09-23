@@ -27,6 +27,7 @@ def preprocess(source_csv_path: str, output_csv_path: str, time_step: int = 60):
                 print(new_df_index)
 
     print(req_num_df)
+    
     req_num_df.to_csv(output_csv_path, sep=',', index=False)
 
 
