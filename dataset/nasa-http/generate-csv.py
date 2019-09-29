@@ -16,6 +16,8 @@ def generate_scv(path: str):
                 raw_fields = line.split()
                 if len(raw_fields) != 10:
                     continue
+                # TODO (EhsanGolshani): change calculation of seconds_from_start value,
+                #  it should be started from first event, not from first of the day
                 fields = extract_fields(raw_fields=raw_fields)
                 csv_writer.writerow(fields)
                 line_count += 1

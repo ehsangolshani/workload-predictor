@@ -6,15 +6,15 @@ from customdataset import CustomWorkloadDataset
 import torch.optim as optim
 
 epoch_number = 1
-window_Size = 33
+window_Size = 65
 
 workload_dataset_july = CustomWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_request_number_dataset_July95_30s.csv',
+    csv_path='dataset/nasa-http/nasa_temporal_rps_July95_30s.csv',
     window_size=window_Size
 )
 
 workload_dataset_august = CustomWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_request_number_dataset_August95_30s.csv',
+    csv_path='dataset/nasa-http/nasa_temporal_rps_August95_30s.csv',
     window_size=window_Size
 )
 
@@ -25,7 +25,7 @@ dataloader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_au
 # data_iterator_august = iter(dataloader_august)
 
 hidden_units_per_layer = 1  # channel
-levels = 6
+levels = 7
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
 output_size = 1

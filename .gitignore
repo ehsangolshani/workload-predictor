@@ -220,6 +220,8 @@ dataset/nasa-http/nasa_temporal_request_number_dataset_August95_30s.csv
 dataset/nasa-http/nasa_temporal_request_number_dataset_July95_30s.csv
 dataset/nasa-http/nasa_temporal_request_number_dataset_August95_10s.csv
 dataset/nasa-http/nasa_temporal_request_number_dataset_July95_10s.csv
+dataset/nasa-http/nasa_temporal_rps_August95_30s.csv
+dataset/nasa-http/nasa_temporal_rps_July95_30s.csv
 dataset/calgary-http/calgary_access_log
 dataset/fifa-worldcup-1998/wc_day14_1
 dataset/saskatchewan-http/usask_abort_log

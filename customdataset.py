@@ -5,7 +5,7 @@ import pandas as pd
 
 class CustomWorkloadDataset(Dataset):
     def __init__(self, csv_path: str, window_size: int):
-        self.data = pd.read_csv(csv_path)[['request_numbers']]
+        self.data = pd.read_csv(csv_path)[['request_rate']]
         self.data_tensor: torch.Tensor = torch.tensor(data=self.data.values, dtype=torch.float)
         self.data_tensor.contiguous()
         # self.data_tensor = self.data_tensor.view(self.data_tensor.size()[1], self.data_tensor.size()[0])
