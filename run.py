@@ -5,8 +5,8 @@ from torch.utils import data
 from customdataset import CustomWorkloadDataset
 import torch.optim as optim
 
-epoch_number = 1
-window_Size = 65
+epoch_number = 10
+window_Size = 9
 
 workload_dataset_july = CustomWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_July95_30s.csv',
@@ -18,66 +18,65 @@ workload_dataset_august = CustomWorkloadDataset(
     window_size=window_Size
 )
 
-dataloader_july: data.DataLoader = data.DataLoader(dataset=workload_dataset_july, batch_size=1, shuffle=False)
-dataloader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_august, batch_size=1, shuffle=False)
+dataloader_july: data.DataLoader = data.DataLoader(dataset=workload_dataset_july, batch_size=1, shuffle=True)
+dataloader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_august, batch_size=1, shuffle=True)
 
 # data_iterator_july = iter(dataloader_july)
 # data_iterator_august = iter(dataloader_august)
 
 hidden_units_per_layer = 1  # channel
-levels = 7
+levels = 4
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
 output_size = 1
-kernel_size = 3
+kernel_size = 2
 dropout = 0.0
 
 model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
                  kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
 
 criterion = nn.MSELoss()
-optimizer = optim.Adam(params=model.parameters())
-# optimizer = optim.SGD(params=model.parameters(), lr=0.000001, momentum=0.0)
+# optimizer = optim.Adam(params=model.parameters())
+optimizer = optim.SGD(params=model.parameters(), lr=0.001, momentum=0.0)
 model.train(mode=True)
 
-with autograd.detect_anomaly():
-    for epoch in range(epoch_number):
-        running_loss = 0.0
-        for i, data in enumerate(dataloader_july, 0):
-            # a = data.size()
-            # data.squeeze()
-            # b = data.size()
-            previous_sequence: torch.Tensor = data[:, :, :-1]
-            current_value: torch.Tensor = data[:, :, -1]
-            current_value = current_value.view(-1)
-            # current_value.long()
-            # previous_sequence = previous_sequence.squeeze(dim=0)
+# with autograd.detect_anomaly():
+for epoch in range(epoch_number):
+    running_loss = 0.0
+    for i, data in enumerate(dataloader_july, 0):
+        # a = data.size()
+        # data.squeeze()
+        # b = data.size()
+        previous_sequence: torch.Tensor = data[:, :, :-1]
+        current_value: torch.Tensor = data[:, :, -1]
+        current_value = current_value.view(-1)
+        # current_value.long()
+        # previous_sequence = previous_sequence.squeeze(dim=0)
 
-            # print(previous_sequence.size())
-            # print(current_value.size())
-            # print()
+        # print(previous_sequence.size())
+        # print(current_value.size())
+        # print()
 
-            # print(current_value)
-            # print()
+        # print(current_value)
+        # print()
 
-            optimizer.zero_grad()
-            outputs = model(previous_sequence)
-            loss = criterion(outputs, current_value)
-            loss.backward()
-            optimizer.step()
+        optimizer.zero_grad()
+        outputs = model(previous_sequence)
+        loss = criterion(outputs, current_value)
+        loss.backward()
+        optimizer.step()
 
-            running_loss += loss.item()
-            if i % 500 == 0 and i > 0:
-                print('[%d, %5d] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 500))
-                print('real: ', str(current_value.item()), '----- got: ', str(outputs.item()))
-                print()
+        running_loss += loss.item()
+        if i % 50 == 0 and i > 0:
+            print('[%d, %5d] loss: %.3f' %
+                  (epoch + 1, i + 1, running_loss / 50))
+            print('real: ', str(current_value.item()), '----- got: ', str(outputs.item()))
+            print()
+            if i > 3000 and i % 10000 == 0 and (loss < 2.0 or i > 20000):
+                torch.save(model.state_dict(), "model_nasa_dataset_sample" +
+                           str(i) + "_loss" + str(loss.item()) + ".pt")
 
-                if i > 3000 and i % 10000 == 0 and (loss < 2.0 or i > 20000):
-                    torch.save(model.state_dict(), "model_nasa_dataset_sample" +
-                               str(i) + "_loss" + str(loss.item()) + ".pt")
-
-                running_loss = 0.0
+            running_loss = 0.0
 
 print('Finished Training')
 torch.save(model.state_dict(), "final_model_nasa_dataset.pt")
