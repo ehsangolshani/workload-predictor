@@ -9,12 +9,12 @@ import torch.optim as optim
 window_Size = 9
 
 workload_dataset_july = CustomWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_July95_30s.csv',
+    csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv',
     window_size=window_Size
 )
 
 workload_dataset_august = CustomWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_August95_30s.csv',
+    csv_path='dataset/nasa-http/nasa_temporal_rps_August95_1m.csv',
     window_size=window_Size
 )
 
