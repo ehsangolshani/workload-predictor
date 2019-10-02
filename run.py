@@ -5,8 +5,8 @@ from torch.utils import data
 from customdataset import CustomWorkloadDataset
 import torch.optim as optim
 
-epoch_number = 10
-window_Size = 9
+epoch_number = 3
+window_Size = 17
 
 workload_dataset_july = CustomWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv',
@@ -18,32 +18,36 @@ workload_dataset_august = CustomWorkloadDataset(
     window_size=window_Size
 )
 
+dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
+
 dataloader_july: data.DataLoader = data.DataLoader(dataset=workload_dataset_july, batch_size=1, shuffle=True)
 dataloader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_august, batch_size=1, shuffle=True)
+dataloader: data.DataLoader = data.DataLoader(dataset=dataset, batch_size=1, num_workers=4, shuffle=True)
 
 # data_iterator_july = iter(dataloader_july)
 # data_iterator_august = iter(dataloader_august)
 
 hidden_units_per_layer = 1  # channel
-levels = 4
+levels = 5
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
 output_size = 1
-kernel_size = 2
+kernel_size = 5
 dropout = 0.2
 
 model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
                  kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
 
 criterion = nn.MSELoss()
-optimizer = optim.Adam(params=model.parameters(), lr=1e-5)
-# optimizer = optim.SGD(params=model.parameters(), lr=0.00001, momentum=0.2)
+
+optimizer = optim.Adam(params=model.parameters(), lr=1e-4)
+# optimizer = optim.SGD(params=model.parameters(), lr=1e-4, momentum=0.3)
 model.train(mode=True)
 
 # with autograd.detect_anomaly():
 for epoch in range(epoch_number):
     running_loss = 0.0
-    for i, data in enumerate(dataloader_july, 0):
+    for i, data in enumerate(dataloader, 0):
 
         previous_sequence: torch.Tensor = data[:, :, :-1]
         current_value: torch.Tensor = data[:, :, -1]

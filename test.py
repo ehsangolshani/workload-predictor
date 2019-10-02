@@ -6,7 +6,7 @@ from torch.utils import data
 from customdataset import CustomWorkloadDataset
 import torch.optim as optim
 
-window_Size = 9
+window_Size = 17
 
 workload_dataset_july = CustomWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv',
@@ -22,11 +22,11 @@ dataloader_july: data.DataLoader = data.DataLoader(dataset=workload_dataset_augu
 dataloader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_august, batch_size=1, shuffle=False)
 
 hidden_units_per_layer = 1  # channel
-levels = 4
+levels = 5
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
 output_size = 1
-kernel_size = 2
+kernel_size = 5
 dropout = 0.0
 
 model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
