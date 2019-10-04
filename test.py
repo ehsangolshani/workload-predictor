@@ -1,10 +1,8 @@
 import torch
-from torch import nn, autograd
-import numpy as np
+from torch import nn
 from model import TCN
 from torch.utils import data
 from customdataset import CustomWorkloadDataset
-import torch.optim as optim
 
 window_Size = 17
 
@@ -31,16 +29,13 @@ dropout = 0.0
 
 model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
                  kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
-model.load_state_dict(torch.load('final_model_nasa_dataset.pt'))
+model.load_state_dict(torch.load('model_nasa_dataset_epoch1_sample20000_loss0.003623355189792742.pt'))
 model.eval()
 criterion = nn.MSELoss()
 
 sum_of_loss = 0
 print(len(dataloader_august))
 for i, data in enumerate(dataloader_august, 0):
-    # a = data.size()
-    # data.squeeze()
-    # b = data.size()
     previous_sequence: torch.Tensor = data[:, :, :-1]
     current_value: torch.Tensor = data[:, :, -1]
     current_value = current_value.view(-1)
