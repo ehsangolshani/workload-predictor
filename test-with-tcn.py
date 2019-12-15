@@ -2,16 +2,16 @@ import torch
 from torch import nn
 from model import TCN
 from torch.utils import data
-from customdataset import CustomWorkloadDataset
+from windoweddataset import WindowedWorkloadDataset
 
 window_Size = 17
 
-workload_dataset_july = CustomWorkloadDataset(
+workload_dataset_july = WindowedWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv',
     window_size=window_Size
 )
 
-workload_dataset_august = CustomWorkloadDataset(
+workload_dataset_august = WindowedWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_August95_1m.csv',
     window_size=window_Size
 )
@@ -29,7 +29,7 @@ dropout = 0.0
 
 model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
                  kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
-model.load_state_dict(torch.load('model_nasa_dataset_epoch1_sample20000_loss0.003623355189792742.pt'))
+
 model.eval()
 criterion = nn.MSELoss()
 
@@ -40,7 +40,7 @@ for i, data in enumerate(dataloader_august, 0):
     current_value: torch.Tensor = data[:, :, -1]
     current_value = current_value.view(-1)
 
-    outputs = model(previous_sequence)
+    outputs, hidden = model(previous_sequence)
     loss = criterion(outputs, current_value)
 
     sum_of_loss += loss.item()
