@@ -6,6 +6,8 @@ import torch.optim as optim
 from sklearn.model_selection import KFold
 
 epoch_number = 2
+hidden_state_size = 1
+input_size = 1
 
 workload_dataset_july = CustomWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv'
@@ -18,7 +20,7 @@ workload_dataset_august = CustomWorkloadDataset(
 dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
 
 train_set_size = int((6 / 10) * len(dataset))
-test_set_size = int((4 / 10) * len(dataset)) + 1
+test_set_size = len(dataset) - train_set_size
 
 train_dataset, test_dataset = data.random_split(dataset=dataset, lengths=[train_set_size, test_set_size])
 
@@ -29,7 +31,9 @@ data_loader: data.DataLoader = data.DataLoader(dataset=dataset, batch_size=1, nu
 train_data_loader: data.DataLoader = data.DataLoader(dataset=train_dataset, batch_size=1, num_workers=4, shuffle=False)
 test_data_loader: data.DataLoader = data.DataLoader(dataset=test_dataset, batch_size=1, num_workers=4, shuffle=False)
 
-model: nn.LSTM = nn.LSTM(input_size=1, hidden_size=1)
+model: nn.LSTM = nn.LSTM(input_size=input_size, hidden_size=hidden_state_size)
+hidden_state = None
+
 criterion = nn.MSELoss()
 
 optimizer = optim.Adam(params=model.parameters(), lr=1e-4)
@@ -44,7 +48,8 @@ for epoch in range(epoch_number):
         future_value: torch.Tensor = data[:, :, 1:2]
 
         optimizer.zero_grad()
-        output, hidden = model(current_value, None)
+        output, hidden_state = model(current_value, None)
+
         loss = criterion(output, current_value)
         loss.backward()
         optimizer.step()
@@ -55,12 +60,12 @@ for epoch in range(epoch_number):
                   (epoch + 1, i + 1, running_loss / 500))
             print('real: ', str(current_value.item()), '----- got: ', str(output.item()))
             print()
-            if (i > 3000 or epoch > 0) and i % 10000 == 0 and (loss < 1.0 or i > 20000):
-                torch.save(model.state_dict(), "model_nasa_dataset" +
-                           "_epoch" + str(epoch) +
-                           "_sample" + str(i) +
-                           "_loss" + str(running_loss / 500) +
-                           ".pt")
+            # if (i > 3000 or epoch > 0) and i % 10000 == 0 and (loss < 1.0 or i > 20000):
+            #     torch.save(model.state_dict(), "model_nasa_dataset" +
+            #                "_epoch" + str(epoch) +
+            #                "_sample" + str(i) +
+            #                "_loss" + str(running_loss / 500) +
+            #                ".pt")
 
             running_loss = 0.0
 

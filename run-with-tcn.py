@@ -22,7 +22,7 @@ workload_dataset_august = WindowedWorkloadDataset(
 dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
 
 train_set_size = int((6 / 10) * len(dataset))
-test_set_size = int((4 / 10) * len(dataset)) + 1
+test_set_size = len(dataset) - train_set_size
 
 train_dataset, test_dataset = data.random_split(dataset=dataset, lengths=[train_set_size, test_set_size])
 
