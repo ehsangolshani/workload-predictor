@@ -7,12 +7,12 @@ from windoweddataset import WindowedWorkloadDataset
 window_Size = 17
 
 workload_dataset_july = WindowedWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv',
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv',
     window_size=window_Size
 )
 
 workload_dataset_august = WindowedWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_August95_1m.csv',
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_August95_1m.csv',
     window_size=window_Size
 )
 

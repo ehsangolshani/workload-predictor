@@ -4,7 +4,6 @@ import torch
 from torch import nn
 from torch.utils import data
 import torch.optim as optim
-from sklearn.model_selection import KFold
 
 epoch_number = 2
 hidden_dim = 8
@@ -14,11 +13,11 @@ batch_size = 1
 num_layers = 4
 
 workload_dataset_july = CustomWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv'
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv'
 )
 
 workload_dataset_august = CustomWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_August95_1m.csv',
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_August95_1m.csv',
 )
 
 dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
@@ -26,20 +25,20 @@ dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
 train_set_size = int((6 / 10) * len(dataset))
 test_set_size = len(dataset) - train_set_size
 
-# train_dataset, test_dataset = data.random_split(dataset=dataset,
+# train_dataset, test_dataset = data.random_split(raw_dataset=raw_dataset,
 #                                                 lengths=[train_set_size, test_set_size])
 
 train_dataset = data.Subset(dataset=dataset, indices=[i for i in range(0, train_set_size)])
 test_dataset = data.Subset(dataset=dataset, indices=[i for i in range(train_set_size, len(dataset))])
 
-# data_loader_july: data.DataLoader = data.DataLoader(dataset=workload_dataset_july,
+# data_loader_july: data.DataLoader = data.DataLoader(raw_dataset=workload_dataset_july,
 #                                                     batch_size=batch_size,
 #                                                     shuffle=False)
-# data_loader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_august,
+# data_loader_august: data.DataLoader = data.DataLoader(raw_dataset=workload_dataset_august,
 #                                                       batch_size=batch_size,
 #                                                       shuffle=False)
 
-# data_loader: data.DataLoader = data.DataLoader(dataset=dataset,
+# data_loader: data.DataLoader = data.DataLoader(raw_dataset=raw_dataset,
 #                                                batch_size=batch_size,
 #                                                num_workers=4,
 #                                                shuffle=False)
@@ -87,7 +86,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "RNN_final_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "trained_models/RNN_final_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')

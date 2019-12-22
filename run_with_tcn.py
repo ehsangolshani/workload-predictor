@@ -2,19 +2,19 @@ import torch
 from torch import nn
 from TCN.model import TCNModel
 from torch.utils import data
-from windoweddataset import WindowedWorkloadDataset
+from custom_datasets.windowed_dataset import WindowedWorkloadDataset
 import torch.optim as optim
 
 epoch_number = 2
 window_Size = 17
 
 workload_dataset_july = WindowedWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv',
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv',
     window_size=window_Size
 )
 
 workload_dataset_august = WindowedWorkloadDataset(
-    csv_path='dataset/nasa-http/nasa_temporal_rps_August95_1m.csv',
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_August95_1m.csv',
     window_size=window_Size
 )
 
@@ -77,7 +77,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "TCN_final_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "trained_models/TCN_final_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')
