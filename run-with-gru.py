@@ -50,11 +50,10 @@ test_data_loader: data.DataLoader = data.DataLoader(dataset=test_dataset,
                                                     num_workers=4,
                                                     shuffle=False)
 
-model: nn.LSTM = nn.LSTM(input_size=input_size, hidden_size=hidden_size,
-                         num_layers=num_layers, batch_first=True)
+model: nn.GRU = nn.GRU(input_size=input_size, hidden_size=hidden_size,
+                       num_layers=num_layers, batch_first=True)
 
 hidden_state = torch.randn(batch_size, num_layers, hidden_size)
-cell_state = torch.randn(batch_size, num_layers, hidden_size)
 
 mse_criterion = nn.MSELoss()  # this is used for training phase
 l1_criterion = nn.L1Loss()
@@ -72,9 +71,8 @@ for epoch in range(epoch_number):
         future_value: torch.Tensor = data[:, :, 1:2]
 
         optimizer.zero_grad()
-        output, hidden = model(current_value, (hidden_state, cell_state))
-        hidden_state = hidden[0].detach()
-        cell_state = hidden[1].detach()
+        output, hidden = model(current_value, hidden_state)
+        hidden_state = hidden.detach()
         mse_loss = mse_criterion(output, future_value)
         mse_loss.backward()
         optimizer.step()
@@ -87,7 +85,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "LSTM_final_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "GRU_final_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')
@@ -101,9 +99,8 @@ for i, data in enumerate(test_data_loader, 0):
     current_value: torch.Tensor = data[:, :, 0:1]
     future_value: torch.Tensor = data[:, :, 1:2]
 
-    output, hidden = model(current_value, (hidden_state, cell_state))
-    hidden_state = hidden[0].detach()
-    cell_state = hidden[1].detach()
+    output, hidden = model(current_value, hidden_state)
+    hidden_state = hidden.detach()
 
     mse_loss = mse_criterion(output, future_value)
     l1_loss = l1_criterion(output, future_value)

@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from model import TCN
+from TCN.model import TCN
 from torch.utils import data
 from windoweddataset import WindowedWorkloadDataset
 
