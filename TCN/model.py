@@ -3,9 +3,9 @@ from torch import nn
 from TCN.tcn import TemporalConvNet
 
 
-class TCN(nn.Module):
+class TCNModel(nn.Module):
     def __init__(self, input_size, output_size, num_channels, kernel_size, dropout, sequence_length):
-        super(TCN, self).__init__()
+        super(TCNModel, self).__init__()
         self.tcn: TemporalConvNet = TemporalConvNet(input_size, num_channels, kernel_size=kernel_size, dropout=dropout)
         self.linear = nn.Linear(sequence_length, output_size)
         self.final_relu = nn.ReLU()

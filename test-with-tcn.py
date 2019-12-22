@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from TCN.model import TCN
+from TCN.model import TCNModel
 from torch.utils import data
 from windoweddataset import WindowedWorkloadDataset
 
@@ -27,8 +27,8 @@ output_size = 1
 kernel_size = 5
 dropout = 0.0
 
-model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
-                 kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
+model: TCNModel = TCNModel(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
+                           kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
 
 model.eval()
 criterion = nn.MSELoss()

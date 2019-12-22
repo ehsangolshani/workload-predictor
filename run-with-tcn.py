@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from TCN.model import TCN
+from TCN.model import TCNModel
 from torch.utils import data
 from windoweddataset import WindowedWorkloadDataset
 import torch.optim as optim
@@ -45,8 +45,8 @@ output_size = 1
 kernel_size = 5
 dropout = 0.25
 
-model: TCN = TCN(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
-                 kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
+model: TCNModel = TCNModel(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
+                           kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
 
 mse_criterion = nn.MSELoss()  # this is used for training phase
 l1_criterion = nn.L1Loss()
@@ -96,7 +96,7 @@ for i, data in enumerate(test_data_loader, 0):
     l1_loss = l1_criterion(outputs, current_value)
 
     sum_of_mse_loss += mse_loss.item()
-    sum_of_mse_loss += l1_loss.item()
+    sum_of_l1_loss += l1_loss.item()
 
 print("average total MSE loss: ", sum_of_mse_loss / len(test_data_loader))
-print("average total L1 loss: ", sum_of_mse_loss / len(test_data_loader))
+print("average total L1 loss: ", sum_of_l1_loss / len(test_data_loader))

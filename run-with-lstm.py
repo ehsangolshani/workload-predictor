@@ -1,3 +1,4 @@
+from LSTM.model import LSTMModel
 from customdataset import CustomWorkloadDataset
 import torch
 from torch import nn
@@ -6,10 +7,11 @@ import torch.optim as optim
 from sklearn.model_selection import KFold
 
 epoch_number = 2
-hidden_size = 1
+hidden_dim = 10
 input_size = 1
+output_size = 1
 batch_size = 1
-num_layers = 1
+num_layers = 4
 
 workload_dataset_july = CustomWorkloadDataset(
     csv_path='dataset/nasa-http/nasa_temporal_rps_July95_1m.csv'
@@ -50,11 +52,11 @@ test_data_loader: data.DataLoader = data.DataLoader(dataset=test_dataset,
                                                     num_workers=4,
                                                     shuffle=False)
 
-model: nn.LSTM = nn.LSTM(input_size=input_size, hidden_size=hidden_size,
-                         num_layers=num_layers, batch_first=True)
-
-hidden_state = torch.randn(batch_size, num_layers, hidden_size)
-cell_state = torch.randn(batch_size, num_layers, hidden_size)
+model: LSTMModel = LSTMModel(input_size=input_size,
+                             output_size=output_size,
+                             hidden_dim=hidden_dim,
+                             num_layers=num_layers,
+                             batch_size=batch_size)
 
 mse_criterion = nn.MSELoss()  # this is used for training phase
 l1_criterion = nn.L1Loss()
@@ -72,9 +74,7 @@ for epoch in range(epoch_number):
         future_value: torch.Tensor = data[:, :, 1:2]
 
         optimizer.zero_grad()
-        output, hidden = model(current_value, (hidden_state, cell_state))
-        hidden_state = hidden[0].detach()
-        cell_state = hidden[1].detach()
+        output, hidden = model(current_value)
         mse_loss = mse_criterion(output, future_value)
         mse_loss.backward()
         optimizer.step()
@@ -101,9 +101,7 @@ for i, data in enumerate(test_data_loader, 0):
     current_value: torch.Tensor = data[:, :, 0:1]
     future_value: torch.Tensor = data[:, :, 1:2]
 
-    output, hidden = model(current_value, (hidden_state, cell_state))
-    hidden_state = hidden[0].detach()
-    cell_state = hidden[1].detach()
+    output, hidden = model(current_value)
 
     mse_loss = mse_criterion(output, future_value)
     l1_loss = l1_criterion(output, future_value)
