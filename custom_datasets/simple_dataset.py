@@ -3,7 +3,7 @@ from torch.utils.data.dataset import Dataset
 import pandas as pd
 
 
-class CustomWorkloadDataset(Dataset):
+class SimpleWorkloadDataset(Dataset):
     def __init__(self, csv_path: str):
         self.data = pd.read_csv(csv_path)[['normalized_request_rate']]
         self.data_tensor: torch.Tensor = torch.tensor(data=self.data.values, dtype=torch.float)

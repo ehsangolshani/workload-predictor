@@ -1,22 +1,23 @@
 from LSTM.model import LSTMModel
-from customdataset import CustomWorkloadDataset
+from custom_datasets.simple_dataset import SimpleWorkloadDataset
 import torch
 from torch import nn
 from torch.utils import data
 import torch.optim as optim
 
+dropout = 0.1
 epoch_number = 2
 hidden_dim = 1
 input_size = 1
 output_size = 1
 batch_size = 1
-num_layers = 1
+num_layers = 3
 
-workload_dataset_july = CustomWorkloadDataset(
+workload_dataset_july = SimpleWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv'
 )
 
-workload_dataset_august = CustomWorkloadDataset(
+workload_dataset_august = SimpleWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_August95_1m.csv',
 )
 
@@ -55,7 +56,8 @@ model: LSTMModel = LSTMModel(input_size=input_size,
                              output_size=output_size,
                              hidden_dim=hidden_dim,
                              num_layers=num_layers,
-                             batch_size=batch_size)
+                             batch_size=batch_size,
+                             dropout=dropout)
 
 mse_criterion = nn.MSELoss()  # this is used for training phase
 l1_criterion = nn.L1Loss()

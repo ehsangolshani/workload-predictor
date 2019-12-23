@@ -3,7 +3,7 @@ from torch import nn
 
 
 class GRUModel(nn.Module):
-    def __init__(self, input_size, output_size, hidden_dim, num_layers, batch_size):
+    def __init__(self, input_size, output_size, hidden_dim, num_layers, batch_size, dropout=0.1):
         super(GRUModel, self).__init__()
         self.hidden_dim = hidden_dim
         self.num_layers = num_layers
@@ -11,7 +11,8 @@ class GRUModel(nn.Module):
         self.gru: nn.GRU = nn.GRU(input_size=input_size,
                                   hidden_size=hidden_dim,
                                   num_layers=num_layers,
-                                  batch_first=True)
+                                  batch_first=True,
+                                  dropout=dropout)
 
         self.hidden_state = self.init_hidden(batch_size=batch_size)
         self.fc = nn.Linear(hidden_dim, output_size)
