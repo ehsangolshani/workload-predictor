@@ -7,11 +7,11 @@ import torch.optim as optim
 
 dropout = 0.1
 epoch_number = 2
-hidden_dim = 8
+hidden_dim = 1
 input_size = 1
 output_size = 1
 batch_size = 1
-num_layers = 4
+num_layers = 1
 
 workload_dataset_july = SimpleWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv'

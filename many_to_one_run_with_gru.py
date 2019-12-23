@@ -7,11 +7,11 @@ import torch.optim as optim
 
 dropout = 0.1
 epoch_number = 2
-hidden_dim = 8
+hidden_dim = 1
 input_size = 1
 output_size = 1
 batch_size = 1
-num_layers = 4
+num_layers = 1
 window_Size = 17
 
 workload_dataset_july = RecurrentSequentialWorkloadDataset(

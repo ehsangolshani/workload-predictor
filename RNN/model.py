@@ -16,6 +16,7 @@ class RNNModel(nn.Module):
 
         self.hidden_state = self.init_hidden(batch_size=batch_size)
         self.fc = nn.Linear(hidden_dim, output_size)
+        self.relu = nn.ReLU()
 
     def forward(self, x):
         # Passing in the input and hidden state into the model and obtaining outputs
