@@ -5,17 +5,16 @@ from torch.utils import data
 from custom_datasets.windowed_dataset import WindowedWorkloadDataset
 import torch.optim as optim
 
-epoch_number = 2
-window_Size = 17
+window_size = 48
 
 workload_dataset_july = WindowedWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv',
-    window_size=window_Size
+    window_size=window_size + 1
 )
 
 workload_dataset_august = WindowedWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_August95_1m.csv',
-    window_size=window_Size
+    window_size=window_size + 1
 )
 
 dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
@@ -25,28 +24,21 @@ test_set_size = len(dataset) - train_set_size
 
 train_dataset, test_dataset = data.random_split(dataset=dataset, lengths=[train_set_size, test_set_size])
 
-data_loader_july: data.DataLoader = data.DataLoader(dataset=workload_dataset_july,
-                                                    batch_size=1, shuffle=True)
-data_loader_august: data.DataLoader = data.DataLoader(dataset=workload_dataset_august,
-                                                      batch_size=1, shuffle=True)
-
-data_loader: data.DataLoader = data.DataLoader(dataset=dataset, batch_size=1,
-                                               num_workers=4, shuffle=True)
 train_data_loader: data.DataLoader = data.DataLoader(dataset=train_dataset, batch_size=1,
                                                      num_workers=4, shuffle=True)
 test_data_loader: data.DataLoader = data.DataLoader(dataset=test_dataset, batch_size=1,
                                                     num_workers=4, shuffle=True)
-
+epoch_number = 2
 hidden_units_per_layer = 1  # channel
 levels = 5
 channel_sizes = [hidden_units_per_layer] * levels
 input_channels = 1
 output_size = 1
-kernel_size = 5
+kernel_size = 3
 dropout = 0.25
 
 model: TCNModel = TCNModel(input_size=input_channels, output_size=output_size, num_channels=channel_sizes,
-                           kernel_size=kernel_size, dropout=dropout, sequence_length=window_Size - 1)
+                           kernel_size=kernel_size, dropout=dropout, sequence_length=window_size)
 
 mse_criterion = nn.MSELoss()  # this is used for training phase
 l1_criterion = nn.L1Loss()
@@ -69,15 +61,14 @@ for epoch in range(epoch_number):
         optimizer.step()
 
         running_loss += mse_loss.item()
-        if i % 500 == 0 and i > 0:
+        if i % 1000 == 0 and i > 0:
             print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 500))
-            print('real: ', str(current_value.item()), '----- got: ', str(outputs.item()))
+                  (epoch + 1, i + 1, running_loss / 1000))
+            print('real: ', str(current_value.item()), '----- got: ', str(outputs.item()), '\n')
             running_loss = 0.0
-            print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "trained_models/TCN_final_model_nasa_dataset.pt")
+torch.save(model.state_dict(), 'trained_models/TCN_workload_model_nasa_dataset.pt')
 print('Trained Model Saved')
 
 print('\n\n\n')
