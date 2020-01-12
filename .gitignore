@@ -237,3 +237,4 @@ raw_dataset/saskatchewan_http/usask_abort_log
 raw_dataset/saskatchewan_http/usask_access_log
 .idea
 model_nasa_dataset_*
+/testii.py

@@ -14,26 +14,19 @@ batch_size = 1
 num_layers = 1
 window_size = 17
 
-workload_dataset_july = RecurrentSequentialWorkloadDataset(
-    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_July95_1m.csv',
+workload_dataset = RecurrentSequentialWorkloadDataset(
+    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_1m.csv',
     window_size=window_size
 )
 
-workload_dataset_august = RecurrentSequentialWorkloadDataset(
-    csv_path='raw_dataset/nasa_http/nasa_temporal_rps_August95_1m.csv',
-    window_size=window_size
-)
-
-dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
-
-train_set_size = int((6 / 10) * len(dataset))
-test_set_size = len(dataset) - train_set_size
+train_set_size = int((6 / 10) * len(workload_dataset))
+test_set_size = len(workload_dataset) - train_set_size
 
 # train_dataset, test_dataset = data.random_split(raw_dataset=raw_dataset,
 #                                                 lengths=[train_set_size, test_set_size])
 
-train_dataset = data.Subset(dataset=dataset, indices=[i for i in range(0, train_set_size)])
-test_dataset = data.Subset(dataset=dataset, indices=[i for i in range(train_set_size, len(dataset))])
+train_dataset = data.Subset(dataset=workload_dataset, indices=[i for i in range(0, train_set_size)])
+test_dataset = data.Subset(dataset=workload_dataset, indices=[i for i in range(train_set_size, len(workload_dataset))])
 
 train_data_loader: data.DataLoader = data.DataLoader(dataset=train_dataset,
                                                      batch_size=batch_size,
@@ -55,10 +48,8 @@ mse_criterion = nn.MSELoss()  # this is used for training phase
 l1_criterion = nn.L1Loss()
 
 optimizer = optim.Adam(params=model.parameters(), lr=1e-4)
-# optimizer = optim.SGD(params=model.parameters(), lr=1e-4, momentum=0.3)
 model.train(mode=True)
 
-# with autograd.detect_anomaly():
 for epoch in range(epoch_number):
     running_loss = 0.0
     for i, data in enumerate(train_data_loader, 0):

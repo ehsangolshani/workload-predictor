@@ -40,10 +40,6 @@ def preprocess(source_csv_path: str, output_csv_path: str, time_step: int = 60, 
             if new_df_index % 10000 == 0:
                 print(new_df_index)
 
-    print()
-    print(req_num_df)
-    print()
-
     if normalize:
         min_request_rate = req_num_df['request_rate'].min()
         max_request_rate = req_num_df['request_rate'].max()
@@ -55,81 +51,56 @@ def preprocess(source_csv_path: str, output_csv_path: str, time_step: int = 60, 
                 print(counter)
             counter += 1
 
-        print()
-        print(req_num_df)
-        print()
-
     req_num_df.to_csv(output_csv_path, sep=',', index=False)
 
 
 if __name__ == '__main__':
     # time_step is in seconds
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_1m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_1m.csv',
                time_step=60,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_1m.csv',
-               time_step=60,
-               normalize=True)
+    print('created nasa_temporal_rps_1m.csv')
 
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_5m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_5m.csv',
                time_step=300,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_5m.csv',
-               time_step=300,
-               normalize=True)
+    print('created nasa_temporal_rps_5m.csv')
 
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_10m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_10m.csv',
                time_step=600,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_10m.csv',
-               time_step=600,
-               normalize=True)
+    print('created nasa_temporal_rps_10m.csv')
 
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_20m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_20m.csv',
                time_step=1200,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_20m.csv',
-               time_step=1200,
-               normalize=True)
+    print('created nasa_temporal_rps_20m.csv')
 
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_30m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_30m.csv',
                time_step=1800,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_30m.csv',
-               time_step=1800,
-               normalize=True)
+    print('created nasa_temporal_rps_30m.csv')
 
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_45m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_45m.csv',
                time_step=2700,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_45m.csv',
-               time_step=2700,
-               normalize=True)
+    print('created nasa_temporal_rps_45m.csv')
 
-    preprocess(source_csv_path='NASA_access_log_Aug95.csv',
-               output_csv_path='nasa_temporal_rps_August95_60m.csv',
+    preprocess(source_csv_path='NASA_access_log.csv',
+               output_csv_path='nasa_temporal_rps_60m.csv',
                time_step=3600,
                normalize=True)
 
-    preprocess(source_csv_path='NASA_access_log_Jul95.csv',
-               output_csv_path='nasa_temporal_rps_July95_60.csv',
-               time_step=3600,
-               normalize=True)
+    print('created nasa_temporal_rps_60m.csv')
