@@ -65,8 +65,8 @@ plot_x_counter = 0
 iteration = 0
 
 train_iterations_num = epoch_number * train_set_size
-train_workload_sample_num = 500
-test_workload_sample_num = 500
+train_workload_sample_num = 250
+test_workload_sample_num = 250
 
 for epoch in range(epoch_number):
     running_loss = 0.0
@@ -85,6 +85,7 @@ for epoch in range(epoch_number):
         predicted_future_workload_value = predicted_future_workload.item()
 
         mse_loss.backward()
+        # l1_loss.backward()
         optimizer.step()
 
         mse_loss_value = mse_loss.item()
@@ -123,13 +124,13 @@ plot_x_where_train_stopped = iteration / 100
 iteration_where_train_stopped = iteration
 train_avg_loss_x.append(plot_x_where_train_stopped)
 
-train_avg_mse_loss_y.append(mse_loss_sum_for_plot / iteration % 100)
-train_avg_l1_loss_y.append(l1_loss_sum_for_plot / iteration % 100)
+train_avg_mse_loss_y.append(mse_loss_sum_for_plot / (iteration % 100))
+train_avg_l1_loss_y.append(l1_loss_sum_for_plot / (iteration % 100))
 
 test_avg_loss_x.append(plot_x_where_train_stopped)
 
-test_avg_mse_loss_y.append(mse_loss_sum_for_plot / iteration % 100)
-test_avg_l1_loss_y.append(l1_loss_sum_for_plot / iteration % 100)
+test_avg_mse_loss_y.append(mse_loss_sum_for_plot / (iteration % 100))
+test_avg_l1_loss_y.append(l1_loss_sum_for_plot / (iteration % 100))
 
 mse_loss_sum_for_plot = 0
 l1_loss_sum_for_plot = 0
@@ -173,7 +174,6 @@ for i, data in enumerate(test_data_loader, 0):
     if i % 1000 == 0 and i > 0:
         print('[%5d] mse loss: %.5f' % (i + 1, sum_of_mse_loss / i))
         print('real: ', str(real_future_workload.item()), '----- got: ', str(predicted_future_workload.item()))
-        running_loss = 0.0
         print()
 
     if iteration % 100 == 0:
@@ -210,8 +210,7 @@ print("average total MSE loss: ", sum_of_mse_loss / len(test_data_loader))
 print("average total L1 loss: ", sum_of_l1_loss / len(test_data_loader))
 
 # draw loss plots
-
-plt.figure(figsize=[19.2, 6.0])
+plt.figure(figsize=[12.0, 8.0])
 plt.title('Prediction Error (MSE Loss)')
 plt.xlabel("Time")
 plt.ylabel("Total Loss")
@@ -223,8 +222,8 @@ plt.savefig('mse_loss_plot.png')
 plt.show()
 plt.close()
 
-plt.figure(figsize=[19.2, 6.0])
-plt.title('CPU Prediction Error (L1 Loss)')
+plt.figure(figsize=[12.0, 8.0])
+plt.title('Prediction Error (L1 Loss)')
 plt.xlabel("Time")
 plt.ylabel("Total Loss")
 plt.axis([0, (train_set_size * epoch_number + test_set_size) / 100 + 1, 0, 0.5])
@@ -236,26 +235,25 @@ plt.show()
 plt.close()
 
 # draw workload plots
-
-plt.figure(figsize=[19.2, 6.0])
+plt.figure(figsize=[12.0, 8.0])
 plt.title('Predicted vs Real future normalized workload (Training)')
 plt.xlabel("Samples")
 plt.ylabel("Normalized Workload")
 plt.axis([train_iterations_num - train_workload_sample_num, train_iterations_num + 1, 0, 1])
-plt.plot(train_workload_sample_x, train_real_workload_sample_y, 'c-', label='Real workload')
-plt.plot(train_workload_sample_x, train_predicted_workload_sample_y, 'y-', label='Predicted workload')
+plt.plot(train_workload_sample_x, train_real_workload_sample_y, 'r-', label='Real workload')
+plt.plot(train_workload_sample_x, train_predicted_workload_sample_y, 'g-', label='Predicted workload')
 plt.legend(loc='upper left')
 plt.savefig('train_real_predicted_workload_plot.png')
 plt.show()
 plt.close()
 
-plt.figure(figsize=[19.2, 6.0])
+plt.figure(figsize=[12.0, 8.0])
 plt.title('Predicted vs Real future normalized workload (Testing)')
 plt.xlabel("Samples")
 plt.ylabel("Normalized Workload")
 plt.axis([0, test_workload_sample_num + 1, 0, 1])
-plt.plot(test_workload_sample_x, test_real_workload_sample_y, 'c-', label='Real workload')
-plt.plot(test_workload_sample_x, test_predicted_workload_sample_y, 'y-', label='Predicted workload')
+plt.plot(test_workload_sample_x, test_real_workload_sample_y, 'r-', label='Real workload')
+plt.plot(test_workload_sample_x, test_predicted_workload_sample_y, 'g-', label='Predicted workload')
 plt.legend(loc='upper left')
 plt.savefig('test_real_predicted_workload_plot.png')
 plt.show()

@@ -69,7 +69,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "trained_models/LSTM_workload_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "trained_models/one_to_one_LSTM_workload_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')

@@ -12,11 +12,11 @@ input_size = 1
 output_size = 1
 batch_size = 1
 num_layers = 1
-window_size = 17
+window_size = 24
 
 workload_dataset = RecurrentSequentialWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_1m.csv',
-    window_size=window_size
+    window_size=window_size + 1
 )
 
 train_set_size = int((6 / 10) * len(workload_dataset))
@@ -72,7 +72,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "trained_models/RNN_workload_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "trained_models/many_to_one_RNN_workload_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')

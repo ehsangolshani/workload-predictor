@@ -12,14 +12,12 @@ input_size = 1
 output_size = 1
 batch_size = 1
 num_layers = 1
-window_size = 17
+window_size = 24
 
 workload_dataset = RecurrentSequentialWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_1m.csv',
-    window_size=window_size
+    window_size=window_size + 1
 )
-
-workload_dataset = data.ConcatDataset([workload_dataset_july, workload_dataset_august])
 
 train_set_size = int((6 / 10) * len(workload_dataset))
 test_set_size = len(workload_dataset) - train_set_size
@@ -74,7 +72,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "trained_models/GRU_workload_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "trained_models/many_to_one_GRU_workload_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')

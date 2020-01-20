@@ -12,11 +12,11 @@ input_size = 1
 output_size = 1
 batch_size = 1
 num_layers = 1
-window_size = 17
+window_size = 24
 
 workload_dataset = RecurrentSequentialWorkloadDataset(
     csv_path='raw_dataset/nasa_http/nasa_temporal_rps_1m.csv',
-    window_size=window_size
+    window_size=window_size + 1
 )
 
 train_set_size = int((6 / 10) * len(workload_dataset))
@@ -72,7 +72,7 @@ for epoch in range(epoch_number):
             print()
 
 print('Finished Training')
-torch.save(model.state_dict(), "trained_models/LSTM_workload_model_nasa_dataset.pt")
+torch.save(model.state_dict(), "trained_models/many_to_one_LSTM_workload_model_nasa_dataset.pt")
 print('Trained Model Saved')
 
 print('\n\n\n')
@@ -98,7 +98,6 @@ for i, data in enumerate(test_data_loader, 0):
     if i % 500 == 0 and i > 0:
         print('[%5d] mse loss: %.5f' % (i + 1, sum_of_mse_loss / i))
         print('real: ', str(future_value.item()), '----- got: ', str(last_prediction.item()))
-        running_loss = 0.0
         print()
 
 print("average total MSE loss: ", sum_of_mse_loss / len(test_data_loader))
