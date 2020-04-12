@@ -10,7 +10,7 @@ class WindowedWorkloadDataset(Dataset):
         self.data_tensor = self.data_tensor.contiguous()
         # self.data_tensor = self.data_tensor.view(self.data_tensor.size()[1], self.data_tensor.size()[0])
         self.data_tensor = self.data_tensor.t()
-        self.data_tensor = self.data_tensor[:, :1100]
+        # self.data_tensor = self.data_tensor[:, :1100]
         self.window_size: int = window_size
 
     def __getitem__(self, index: int):

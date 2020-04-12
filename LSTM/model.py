@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-from torch.nn.utils import rnn
 
 
 class LSTMModel(nn.Module):
@@ -21,7 +20,8 @@ class LSTMModel(nn.Module):
 
     def forward(self, x):
         # Passing in the input and hidden state into the model and obtaining outputs
-        output, hidden = self.lstm(x, (self.hidden_state, self.cell_state))
+        # TODO: should I pass hidden_state and cell_state each time or not?
+        output, hidden = self.lstm(x)
         self.hidden_state = hidden[0].detach()
         self.cell_state = hidden[1].detach()
 

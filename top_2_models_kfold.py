@@ -16,7 +16,7 @@ workload_dataset = WindowedWorkloadDataset(
 )
 
 number_of_splits = 3
-number_of_repeats = 3
+number_of_repeats = 4
 
 tcn_mse_loss_avg_sum = 0
 many_to_one_lstm_mse_loss_avg_sum = 0
@@ -24,8 +24,6 @@ tcn_l1_loss_avg_sum = 0
 many_to_one_lstm_l1_loss_avg_sum = 0
 
 repeated_k_fold = RepeatedKFold(n_splits=number_of_splits, n_repeats=number_of_repeats)
-
-# TODO: make LSTM usable for data sampled non-sequentially
 
 k = 0
 
