@@ -157,21 +157,21 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
             tcn_running_loss += tcn_mse_loss_value
             many_to_one_lstm_running_loss += many_to_one_lstm_mse_loss_value
 
-            if i % 500 == 0 and i > 0:
-                print('[%d, %5d] MSE loss (tcn, n_to_1_lstm) --> : %.5f   %.5f' %
-                      (epoch + 1, i + 1,
-                       tcn_running_loss / 500,
-                       many_to_one_lstm_running_loss / 500)
-                      )
-
-                print('real: {}  ---  got: {}  {}\n'.format(
-                    real_future_workload_value,
-                    tcn_predicted_future_workload_value,
-                    many_to_one_lstm_predicted_future_workload_value)
-                )
-
-                tcn_running_loss = 0.0
-                many_to_one_lstm_running_loss = 0.0
+            # if i % 500 == 0 and i > 0:
+            #     print('[%d, %5d] MSE loss (tcn, n_to_1_lstm) --> : %.5f   %.5f' %
+            #           (epoch + 1, i + 1,
+            #            tcn_running_loss / 500,
+            #            many_to_one_lstm_running_loss / 500)
+            #           )
+            #
+            #     print('real: {}  ---  got: {}  {}\n'.format(
+            #         real_future_workload_value,
+            #         tcn_predicted_future_workload_value,
+            #         many_to_one_lstm_predicted_future_workload_value)
+            #     )
+            #
+            #     tcn_running_loss = 0.0
+            #     many_to_one_lstm_running_loss = 0.0
 
     print('Finished Training')
 
@@ -247,18 +247,18 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
         tcn_sum_of_l1_loss += tcn_l1_loss_value
         many_to_one_lstm_sum_of_l1_loss += many_to_one_lstm_l1_loss_value
 
-        if i % 500 == 0 and i > 0:
-            print('[%5d] MSE loss (tcn, n_to_1_lstm) --> : %.5f  %.5f' %
-                  (i + 1,
-                   tcn_sum_of_mse_loss / 500,
-                   many_to_one_lstm_sum_of_mse_loss / 500)
-                  )
-
-            print('real: {}  ---  got: {}  {}\n'.format(
-                real_future_workload_value,
-                tcn_predicted_future_workload_value,
-                many_to_one_lstm_predicted_future_workload_value)
-            )
+        # if i % 500 == 0 and i > 0:
+        #     print('[%5d] MSE loss (tcn, n_to_1_lstm) --> : %.5f  %.5f' %
+        #           (i + 1,
+        #            tcn_sum_of_mse_loss / i,
+        #            many_to_one_lstm_sum_of_mse_loss / i)
+        #           )
+        #
+        #     print('real: {}  ---  got: {}  {}\n'.format(
+        #         real_future_workload_value,
+        #         tcn_predicted_future_workload_value,
+        #         many_to_one_lstm_predicted_future_workload_value)
+        #     )
 
     a1 = tcn_sum_of_mse_loss / len(test_data_loader)
     a2 = many_to_one_lstm_sum_of_mse_loss / len(test_data_loader)

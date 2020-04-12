@@ -336,8 +336,8 @@ for i, test_data in enumerate(test_data_loader, 0):
     if i % 500 == 0 and i > 0:
         print('[%5d] MSE loss (tcn, n_to_1_lstm) --> : %.5f  %.5f' %
               (i + 1,
-               tcn_sum_of_mse_loss / 500,
-               many_to_one_lstm_sum_of_mse_loss / 500)
+               tcn_sum_of_mse_loss / i,
+               many_to_one_lstm_sum_of_mse_loss / i)
               )
 
         print('real: {}  ---  got: {}  {}\n'.format(
