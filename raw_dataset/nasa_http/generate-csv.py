@@ -4,7 +4,7 @@ from typing import List
 
 def generate_scv(paths: List[str], output_path):
     with open(file=output_path, mode='w') as csv_file:
-        fieldnames = ['year', 'month', 'day', 'hour', 'minute', 'second',
+        fieldnames = ['source_host', 'year', 'month', 'day', 'hour', 'minute', 'second',
                       'seconds_from_start', 'request_type', 'reply_code']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -31,7 +31,8 @@ def generate_scv(paths: List[str], output_path):
                         print(line_count)
 
 
-def extract_fields(raw_fields: List[str]) -> [int, str, int, int, int, int, int, str, str]:
+def extract_fields(raw_fields: List[str]) -> [str, int, str, int, int, int, int, int, str, str]:
+    source_host = raw_fields[0][2:]
     time = raw_fields[3]
     time = time[1:]
     time_splitted = time.split(sep=':')
@@ -51,9 +52,10 @@ def extract_fields(raw_fields: List[str]) -> [int, str, int, int, int, int, int,
     request_type = request_type[1:]
     reply_code = raw_fields[8]
 
-    return [year, month, day, hour, minute, second, seconds_from_start_in_this_month, request_type, reply_code]
+    return [source_host, year, month, day, hour, minute, second,
+            seconds_from_start_in_this_month, request_type, reply_code]
 
 
 if __name__ == '__main__':
     generate_scv(paths=['NASA_access_log_Jul95', 'NASA_access_log_Aug95'],
-                 output_path='NASA_access_log.csv')
+                 output_path='NASA_access_log_analysis.csv')

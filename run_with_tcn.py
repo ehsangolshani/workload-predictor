@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import torch
 from torch import nn
 from TCN.model import TCNModel
@@ -141,6 +143,7 @@ print('Trained Model Saved')
 
 print('\n\n\n')
 print('start evaluation')
+model.load_state_dict(torch.load('trained_models/TCN_workload_model_nasa_dataset.pt'))
 model.eval()
 
 sum_of_mse_loss = 0
@@ -148,13 +151,24 @@ sum_of_l1_loss = 0
 
 first_plot_x_test_count = True
 
+response_time_sum = 0
+response_time_counter = 0
+
 for i, data in enumerate(test_data_loader, 0):
     iteration += 1
+
+    start_timestamp = datetime.now().timestamp()
+
     previous_workload_sequence: torch.Tensor = data[:, :, :-1]
     real_future_workload: torch.Tensor = data[:, :, -1]
     real_future_workload = real_future_workload.view(-1)
 
     predicted_future_workload = model(previous_workload_sequence)
+
+    finish_timestamp = datetime.now().timestamp()
+    diff_in_seconds = finish_timestamp - start_timestamp
+    response_time_counter += 1
+    response_time_sum += diff_in_seconds
 
     mse_loss = mse_criterion(predicted_future_workload, real_future_workload)
     l1_loss = l1_criterion(predicted_future_workload, real_future_workload)
@@ -208,6 +222,8 @@ l1_loss_sum_for_plot = 0
 
 print("average total MSE loss: ", sum_of_mse_loss / len(test_data_loader))
 print("average total L1 loss: ", sum_of_l1_loss / len(test_data_loader))
+print('average response time of model: ',
+      (response_time_sum * 1000) / response_time_counter)
 
 # draw loss plots
 plt.figure(figsize=[12.0, 8.0])

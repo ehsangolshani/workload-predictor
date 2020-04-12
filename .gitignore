@@ -239,4 +239,5 @@ raw_dataset/saskatchewan_http/usask_access_log
 model_nasa_dataset_*
 raw_dataset/nasa_http/nasa_temporal_rps_*
 raw_dataset/nasa_http/NASA_access_log*
-/testii.py
+/testi*
+/*.png
