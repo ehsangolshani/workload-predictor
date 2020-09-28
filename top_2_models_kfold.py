@@ -16,7 +16,7 @@ workload_dataset = WindowedWorkloadDataset(
 )
 
 number_of_splits = 3
-number_of_repeats = 4
+number_of_repeats = 5
 
 tcn_mse_loss_avg_sum = 0
 many_to_one_lstm_mse_loss_avg_sum = 0
