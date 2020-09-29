@@ -1,11 +1,17 @@
+from pprint import pprint
+
 import torch
 from torch import nn
+
+from ARMA.model import ARMAModel
 from LSTM.model import LSTMModel
 from TCN.model import TCNModel
 from torch.utils import data
 from custom_datasets.windowed_dataset import WindowedWorkloadDataset
 import torch.optim as optim
 from sklearn.model_selection import RepeatedKFold
+
+from linear_regression.model import LinearRegressionModel
 
 tcn_window_size = 24
 many_to_one_lstm_tcn_window_size = 20
@@ -32,9 +38,9 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
     train_dataset = data.Subset(dataset=workload_dataset, indices=train_indices)
     test_dataset = data.Subset(dataset=workload_dataset, indices=test_indices)
 
-    train_data_loader: data.DataLoader = data.DataLoader(dataset=train_dataset, batch_size=1,
+    train_data_loader: data.DataLoader = data.DataLoader(dataset=train_dataset, batch_size=2,
                                                          num_workers=4, shuffle=True)
-    test_data_loader: data.DataLoader = data.DataLoader(dataset=test_dataset, batch_size=1,
+    test_data_loader: data.DataLoader = data.DataLoader(dataset=test_dataset, batch_size=2,
                                                         num_workers=4, shuffle=True)
 
     epoch_number = 2
@@ -77,6 +83,16 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
 
     many_to_one_lstm_optimizer = optim.Adam(params=many_to_one_lstm_model.parameters(), lr=1e-4)
 
+    ####################### create Linear Regression model
+
+    ####################### create ARMA model
+    ARMA_model: ARMAModel = ARMAModel()
+    arma_mse_criterion = nn.MSELoss()  # this is used for training phase
+    arma_l1_criterion = nn.L1Loss()
+    ####################### create Ensemble model
+    linear_regression_model: LinearRegressionModel = LinearRegressionModel()
+    lr_mse_criterion = nn.MSELoss()  # this is used for training phase
+    lr_l1_criterion = nn.L1Loss()
     #######################
 
     tcn_model.train(mode=True)
@@ -92,13 +108,16 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
         many_to_one_lstm_running_loss = 0.0
 
         for i, train_data in enumerate(train_data_loader, 0):
-
             ####
+            sh = train_data.size()
+            print(sh)
+            pprint(train_data)
             tcn_previous_workload_sequence: torch.Tensor = train_data[:, :, :-1]
             tcn_real_future_workload: torch.Tensor = train_data[:, :, -1]
             tcn_real_future_workload = tcn_real_future_workload.view(-1)
 
             data_for_many_to_one_lstm = train_data.permute(0, 2, 1)
+            pprint(data_for_many_to_one_lstm)
             many_to_one_lstm_previous_workload_sequence: torch.Tensor = data_for_many_to_one_lstm[:,
                                                                         -1 - many_to_one_lstm_tcn_window_size:-1, :]
             many_to_one_lstm_real_future_workload: torch.Tensor = data_for_many_to_one_lstm[:, -1:, :]
@@ -190,7 +209,6 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
     many_to_one_lstm_sum_of_l1_loss = 0
 
     for i, test_data in enumerate(test_data_loader, 0):
-
         ####
         tcn_previous_workload_sequence: torch.Tensor = test_data[:, :, :-1]
         tcn_real_future_workload: torch.Tensor = test_data[:, :, -1]
@@ -201,11 +219,20 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
                                                                     -1 - many_to_one_lstm_tcn_window_size:-1, :]
         many_to_one_lstm_real_future_workload: torch.Tensor = data_for_many_to_one_lstm[:, -1:, :]
 
+        arma_previous_workload_sequence: torch.Tensor = tcn_previous_workload_sequence
+        arma_real_future_workload = tcn_real_future_workload
+
+        lr_previous_workload_sequence: torch.Tensor = tcn_previous_workload_sequence
+        lr_real_future_workload = tcn_real_future_workload
+
         ####
         tcn_output = tcn_model(tcn_previous_workload_sequence)
 
         many_to_one_lstm_whole_output, _ = many_to_one_lstm_model(many_to_one_lstm_previous_workload_sequence)
         many_to_one_lstm_output = many_to_one_lstm_whole_output[:, -1:, :]
+
+        arma_output = ARMA_model.predict(arma_previous_workload_sequence)
+        lr_output = linear_regression_model.predict(lr_previous_workload_sequence)
 
         ####
         tcn_mse_loss = tcn_mse_criterion(tcn_output, tcn_real_future_workload)
@@ -214,6 +241,9 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
             many_to_one_lstm_output,
             many_to_one_lstm_real_future_workload
         )
+
+        arma_mse_loss = arma_mse_criterion(arma_output, arma_real_future_workload)
+        lr_mse_loss = lr_mse_criterion(lr_output, lr_real_future_workload)
 
         ####
         tcn_l1_loss = tcn_l1_criterion(
@@ -226,7 +256,13 @@ for train_indices, test_indices in repeated_k_fold.split(workload_dataset):
             many_to_one_lstm_real_future_workload
         )
 
+        arma_l1_loss = arma_l1_criterion(arma_output, arma_real_future_workload)
+        lr_l1_loss = lr_l1_criterion(lr_output, lr_real_future_workload)
+
         ####
+
+        ########## ?
+
         real_future_workload_value = tcn_real_future_workload.item()
 
         tcn_predicted_future_workload_value = tcn_output.item()
